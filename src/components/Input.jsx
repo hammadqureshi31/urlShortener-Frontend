@@ -40,22 +40,19 @@ const Input = () => {
   const handleClick = async () => {
   try {
     const response = await axios.post(
-      'https://urlshortener-backend-production-9b4e.up.railway.app/url', // Change this to your production backend URL when deploying
-      { url: originlURL },
-      { withCredentials: true } // Ensures cookies are sent with the request
+      'https://urlshortener-backend-production-9b4e.up.railway.app/url', 
+      { url: originlURL }, 
+      { withCredentials: true }
     );
     console.log(response.data);
     setOriginlURL("");
-    console.log("from input ", response);
-
     dispatch(setURL(response.data));
   } catch (error) {
     if (error.response && error.response.status === 401) {
       console.error("You must log in first");
-      toast.error('Please log in first', { theme: "dark" });
+      toast.error('Please login first', { theme: "dark" });
     } else {
       console.error(error);
-      toast.error('An error occurred', { theme: "dark" });
     }
   }
 };
