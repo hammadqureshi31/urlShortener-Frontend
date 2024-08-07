@@ -9,7 +9,7 @@ const ShortLinks = () => {
   const urlRefs = useRef({});
   const [show, setShow] = useState({});
   const [copied, setCopied] = useState({});
-  const backendPortURL = "clever-flexibility.railway.internal/";
+  const backendPortURL = "https://clever-flexibility-production.up.railway.app/";
   const shortLinks = useSelector((state) => state);
 
   useEffect(() => {
