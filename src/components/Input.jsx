@@ -39,7 +39,7 @@ const Input = () => {
 
   const handleClick = async () => {
     try {
-      const response = await axios.post('https://clever-flexibility-production.up.railway.app/url', { url: originlURL }, { withCredentials: true });
+      const response = await axios.post('https://urlshortener-backend-production-9b4e.up.railway.app/url', { url: originlURL }, { withCredentials: true });
       console.log(response.data);
       setOriginlURL("");
       console.log("from input ", response);
