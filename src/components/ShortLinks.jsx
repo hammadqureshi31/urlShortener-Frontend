@@ -9,14 +9,15 @@ const ShortLinks = () => {
   const urlRefs = useRef({});
   const [show, setShow] = useState({});
   const [copied, setCopied] = useState({});
-  const backendPortURL = "http://localhost:3000/url/";
+  const backendPortURL = "https://urlshortener-backend-production-9b4e.up.railway.app/url/";
   const shortLinks = useSelector((state) => state);
 
   useEffect(() => {
     const fetchURLs = async () => {
       try {
-        const response = await axios.get(`${backendPortURL}url`);
+        const response = await axios.get(`${backendPortURL}`);
         setAllIDs(response.data);
+        console.log(response.data)
       } catch (error) {
         console.error("Error fetching URLs:", error);
       }
