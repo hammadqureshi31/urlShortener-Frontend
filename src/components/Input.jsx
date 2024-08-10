@@ -8,38 +8,16 @@ import { setURL } from "../Redux/slices/urlSlice";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {backendPortURL} from "../../confiq"
+import { useSelector } from "react-redux";
 
 const Input = () => {
   const [originlURL, setOriginlURL] = useState("");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  // const backendPortURL = "http://localhost:3000/";
-
-  // const handleClick = async (req, res) => {
-  //   console.log(originlURL);
-  //   try {
-  //     let shortId = await axios.post(
-  //       `${backendPortURL}url`,
-  //       {
-  //         url: originlURL,
-  //       },
-  //       { withCredentials: true }
-  //     );
-  //     setOriginlURL("");
-  //     console.log("from input ", shortId);
-
-  //     dispatch(setURL(shortId.data));
-  //   } catch (err) {
-  //     console.log("You must login first");
-  //     navigate("/login");
-  //   }
-  // };
-
 
   const handleClick = async () => {
     try {
-      const response = await axios.post('https://urlshortener-backend-production-9b4e.up.railway.app/url', { url: originlURL }, { withCredentials: true });
+      const response = await axios.post(`${backendPortURL}url`, { url: originlURL }, { withCredentials: true });
       console.log(response.data);
       setOriginlURL("");
       console.log("from input ", response);

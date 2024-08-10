@@ -1,1 +1,1 @@
-export const backendPortURL = "https://urlshortener-backend-production-9b4e.up.railway.app/"
+export const backendPortURL = "http://localhost:3000/";

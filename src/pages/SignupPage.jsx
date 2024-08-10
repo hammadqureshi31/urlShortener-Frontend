@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from "axios";
-import { backendPortURL } from '../../confiq';
 import { ToastContainer, toast } from 'react-toastify';
+import { backendPortURL } from '../../confiq';
 
 const SignupSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is Required'),
@@ -17,14 +17,15 @@ const SignupPage = () => {
 
   const handleSubmit = async (values)  =>{
     const { name, email, password} = values
+
     try{
-      let user = await axios.post(`${backendPortURL}user`, {
-        name,
+      let user = await axios.post(`${backendPortURL}user/register`, {
+        username: name,
         email,
         password
       })
       toast.success('Registration Successfully',{ theme: "dark" });
-      console.log(user)
+      // console.log(user)
       navigate('/login')
     }catch{
       console.log("Something went wrong.")

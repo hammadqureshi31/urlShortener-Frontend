@@ -2,29 +2,51 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { GrCopy } from "react-icons/gr";
 import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowUp } from "react-icons/io";
 import { useSelector } from "react-redux";
+import * as jwt_decode from "jwt-decode";
 
 const ShortLinks = () => {
   const [allIDs, setAllIDs] = useState([]);
   const urlRefs = useRef({});
   const [show, setShow] = useState({});
   const [copied, setCopied] = useState({});
-  const backendPortURL = "https://urlshortener-backend-production-9b4e.up.railway.app/url/";
-  const shortLinks = useSelector((state) => state);
+  const shortLinks = useSelector((state) => state.url);
+  let loggedInUser = useSelector((state)=> state.user?._id);
+  let flag = false
+  const [arrow, setArrow] = useState(false)
 
+  if(!loggedInUser){
+    loggedInUser = parseInt(localStorage.getItem("loggedInUserId"))
+    flag = true
+  }
+  
+  const backendPortURL = "http://localhost:3000/url/";
+  
   useEffect(() => {
     const fetchURLs = async () => {
       try {
         const response = await axios.get(`${backendPortURL}`);
-        setAllIDs(response.data);
-        console.log(response.data)
+        const responseToFilter = response.data;
+
+        if(flag){
+          const filteredURLsFlags = responseToFilter.filter((url) => parseInt(url.createdBy) === loggedInUser);
+          console.log("Filtered URLs flaged", filteredURLsFlags);
+          setAllIDs(filteredURLsFlags)
+        }
+        else{
+        const filteredURLs = responseToFilter.filter((url) => url.createdBy === loggedInUser);
+        console.log("Filtered URLs ", filteredURLs);
+        setAllIDs(filteredURLs);
+        }
+
       } catch (error) {
         console.error("Error fetching URLs:", error);
       }
     };
 
     fetchURLs();
-  }, [shortLinks]);
+  }, [shortLinks.length]); // Added shortLinks as dependency
 
   const toggleShow = (id) => {
     setShow((prevShow) => ({
@@ -32,6 +54,10 @@ const ShortLinks = () => {
       [id]: !prevShow[id],
     }));
   };
+
+  const ArrowIcon = ({ id }) => (
+    show[id] ? <IoIosArrowUp /> : <IoIosArrowDown />
+);
 
   const handleCopyURL = ({ backendPortURL, shortId, urlRef }) => {
     if (!backendPortURL || !shortId) {
@@ -88,13 +114,13 @@ const ShortLinks = () => {
                   <div className="flex justify-start text-center gap-1 text-gray-400 ">
                     <h3 className="text-md pt-1 w-56">
                       {backendPortURL}
-                      {url.shortId}
+                      {url.shortID}
                     </h3>
                     <div>
                       <div
-                        className={`p-2 rounded-full ${copied[url.shortId] ? 'bg-[#144ee3]' : 'bg-gray-700'}`}
+                        className={`p-2 rounded-full ${copied[url.shortID] ? 'bg-[#144ee3]' : 'bg-gray-700'}`}
                         ref={(el) => (urlRefs.current[url._id] = el)}
-                        onClick={() => handleCopyURL({ backendPortURL, shortId: url.shortId, urlRef: urlRefs.current[url._id] })}
+                        onClick={() => handleCopyURL({ backendPortURL, shortId: url.shortID, urlRef: urlRefs.current[url._id] })}
                       >
                         <GrCopy />
                       </div>
@@ -106,7 +132,7 @@ const ShortLinks = () => {
                       onClick={() => toggleShow(url._id)}
                       className="text-lg p-2 rounded-full cursor-pointer bg-zinc-700 flex justify-center text-center sm:hidden"
                     >
-                      <IoIosArrowDown />
+                      <ArrowIcon id={url._id}/>
                     </div>
                   </div>
 
@@ -123,7 +149,7 @@ const ShortLinks = () => {
 
                     <div className="hidden sm:inline-block ">
                       <img
-                        src={`${url.qrCode}`}
+                        src={`${url.qrcode}`}
                         className="size-20 object-fill"
                         alt="QR Code"
                       />
@@ -137,7 +163,7 @@ const ShortLinks = () => {
                       {url.redirectURL}
                     </div>
                     <img
-                      src={`${url.qrCode}`}
+                      src={`${url.qrcode}`}
                       className="size-20 pb-1"
                       alt="QR Code"
                     />

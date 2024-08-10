@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { store } from "./Redux/store";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LogoutPage from "./pages/LogoutPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/logout" element={<LogoutPage />}/>
           </Routes>
           <ToastContainer
             position="bottom-right"

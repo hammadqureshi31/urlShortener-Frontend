@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { renderMatches, useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
-import { backendPortURL } from '../../confiq';
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../Redux/slices/UserSlice';
+import { backendPortURL } from '../../confiq';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -24,25 +24,28 @@ const LoginPage = () => {
     console.log(email, password);
 
     try {
+      // axios.defaults.withCredentials = true
       const response = await axios.post(`${backendPortURL}user/login`, { email, password }, { withCredentials: true });
-      // console.log(response.data);
-      // console.log("surrent user",response.data.currentUser)
-      dispatch(setUser(response.data.currentUser))
+      console.log("From login page", response.data);
+      dispatch(setUser(response.data))
+      localStorage.setItem("loggedInUserId", response.data._id)
+      localStorage.setItem("loggedInUserEmail", response.data.email)
+      localStorage.setItem("loggedInUserName", response.data.username)
 
       // Set a persistent cookie if "Remember Me" is checked
-      if (rememberMe) {
-        document.cookie = `loggedInUser=${email}; expires=${new Date(Date.now() + 604800000)}; path=/`; // Cookie expires in 7 days
-      }
+      // if (rememberMe) {
+      //   document.cookie = `loggedInUser=${email}; expires=${new Date(Date.now() + 604800000)}; path=/`; // Cookie expires in 7 days
+      // }
 
       // Redirect or handle post-login actions here
       if (response.status === 200) {
-      toast.success('Login Successfully',{ theme: "dark" });
+      // toast.success('Login Successfully',{ theme: "dark" });
         setTimeout(() => {
           navigate('/');
         }, 2000);
       }
     } catch (error) {
-      toast.error('Please login first',{ theme: "dark" });
+      // toast.error('Please register first',{ theme: "dark" });
       console.log("Something went wrong", error);
       navigate("/signup")
     }
@@ -61,7 +64,7 @@ const LoginPage = () => {
               <ErrorMessage name="password" component="div" className="text-red-400" />
               <div className="flex items-center justify-between gap-8 mt-3 mb-4">
                 <label htmlFor="rememberMe" className="flex items-center">
-                  <input type="checkbox" id="rememberMe" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} className="mr-2 leading-tight" />
+                  <input type="checkbox" id="rememberMe" value={rememberMe} onChange={(prev)=> setRememberMe(!prev)} className="mr-2 leading-tight" />
                   <span className="text-xs sm:text-sm text-nowrap text-[#144EE3]">Remember me</span>
                 </label>
                 <span className="text-[#144EE3] text-xs sm:text-sm cursor-pointer text-nowrap">
